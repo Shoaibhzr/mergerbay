@@ -1,0 +1,32 @@
+﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:15118",
+      "sslPort": 44321
+    }
+  },
+  "profiles": {
+    "MergerBayApi": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7065;http://localhost:5065",
+      "environmentVariables": {
+        "DefaultConnection": "Server=eventsolution.uaenorth.cloudapp.azure.com;User ID=eventsolution;Password=abc.123;Database=MergerBay;TrustServerCertificate=True;Encrypt=True;MultipleActiveResultSets=true;",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
