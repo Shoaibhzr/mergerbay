@@ -57,5 +57,81 @@ namespace MergerBayApi.Controllers
             }
 
         }
+
+        [AllowAnonymous]
+        [Route("ChangePassword")]
+        [HttpPost]
+        public async Task<IActionResult> User_Personal_Information_API([FromBody] ChangePassword requestclient)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    requestclient.Password = _passwordHasher.GenerateIdentityV3Hash(requestclient.Password);
+                    var response = await _UserManagement.ChangePassword(requestclient);
+
+                    return new OkObjectResult(new BaseApiModel { root = "Password has been changed successfully", Success = true });
+                    //return response;
+                }
+                else
+                {
+                    return new OkObjectResult(new BaseApiModel { Message = "Operation failed", Success = false });
+                }
+            }
+            catch (System.Exception ex)
+            {
+
+                return new OkObjectResult(new BaseApiModel { Message = "Operation failed", Success = false });
+            }
+
+        }
+
+        [AllowAnonymous]
+        [Route("NotificationSetting")]
+        [HttpPost]
+        public async Task<IActionResult> Notification_Setting([FromBody] NotificationSettingModel requestclient)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var response = await _UserManagement.NotificationSetting(requestclient);
+
+                    return new OkObjectResult(new BaseApiModel { root = "Notification setting has been saved successfully", Success = true });
+                    //return response;
+                }
+                else
+                {
+                    return new OkObjectResult(new BaseApiModel { Message = "Operation failed", Success = false });
+                }
+            }
+            catch (System.Exception ex)
+            {
+
+                return new OkObjectResult(new BaseApiModel { Message = "Operation failed", Success = false });
+            }
+
+        }
+
+        [AllowAnonymous]
+        [Route("get/NotificationSetting")]
+        [HttpPost]
+        public async Task<NotificationSettingModel> GetNotification_Setting([FromBody] NotificationSettingModel requestclient)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    requestclient = await _UserManagement.GetNotificationSetting(requestclient.User_Id);
+                }
+            }
+            catch (System.Exception ex)
+            {
+
+                return requestclient;
+            }
+            return requestclient;
+
+        }
     }
 }

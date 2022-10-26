@@ -22,9 +22,11 @@ namespace MergerBay.Infrastructure.Interfaces.UserManagment
         Task<bool> Reset_Password_Generate_link(Reset_Password request);
         Task<bool> Check_For_Valid_Reset_Password_Link(ConfirmEmail request);
         Task<bool> Reset_Password(Reset_Password_After_Verification request);
-
+        Task<ChangePassword> ChangePassword(ChangePassword model);
+        Task<bool> NotificationSetting(NotificationSettingModel model);
         Task<List<string>> Invited_People(List<Invited_People_Email> request);
         Task<Invited_User_ID> Invited_User_Verification(ConfirmEmail request);
+        Task<NotificationSettingModel> GetNotificationSetting(string User_Id);
         Task<bool> User_Personal_Information_Invited_People(UserPersonalInformation request);
         Task<bool> Disabled_User(Deleted_User request);
 

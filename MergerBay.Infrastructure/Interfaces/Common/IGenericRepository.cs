@@ -10,13 +10,17 @@ namespace MergerBay.Infrastructure.Interfaces.Common
 {
     public interface IGenericRepository
     {
-        ValueTask<T> GetByIdAsync<T>(int id) where T : class;
+        ValueTask<T> GetByIdAsync<T>(Guid id) where T : class;
         Task<T> FirstOrDefaultAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
         Task AddAsync<T>(T entity) where T : class;
         Task AddRangeAsync<T>(IEnumerable<T> entities) where T : class;
         void Remove<T>(T entity) where T : class;
         void RemoveRange<T>(IEnumerable<T> entities) where T:class;
-        IEnumerable<T> Where<T>(Expression<Func<T, bool>> predicate) where T : class;
+        Task<IEnumerable<T>> Where<T>(Expression<Func<T, bool>> predicate) where T : class;
+        Task<bool> Any<T>(Expression<Func<T, bool>> predicate) where T : class;
+
+        Task Update<T>(T entity) where T : class;
+
         Task<int> CommitChangesAsync();
         //Task<List<Sectors>> GetAllAsync();
         Task<IEnumerable<T>> GetAllAsync<T>() where T : class;

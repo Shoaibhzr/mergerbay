@@ -16,6 +16,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using MergerBay.Domain.Entities.Setups;
 
 namespace MergerBay.Services.Services.UserManagment
 {
@@ -53,7 +54,9 @@ namespace MergerBay.Services.Services.UserManagment
                     tu.City = "not recorded";
                     tu.State = "not recorded";
                     tu.Zip = "not recorded";
+                    tu.Designation = "not recorded";
                     tu.Website = "not recorded";
+                    tu.Designation = "not recorded";
                     tu.Is_Deleted = false;
                     tu.Is_Active = true;
                     tu.Is_Company_Account = true;
@@ -68,6 +71,76 @@ namespace MergerBay.Services.Services.UserManagment
                 }
               
                 return u;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<ChangePassword> ChangePassword(ChangePassword model)
+        {
+            try
+            {
+                Guid userKey = Guid.Parse(model.User_Id);
+                var IsExist = _context.UserPersonalInformation.FirstOrDefault(f => f.UserId == userKey && f.Is_Deleted == false && f.Is_Active == true);
+                if (IsExist !=null)
+                {
+                    IsExist.Password = model.Password;
+                    _context.SaveChanges();
+                }
+                return model;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<bool> NotificationSetting(NotificationSettingModel model)
+        {
+            try
+            {
+                Guid UserKey = Guid.Parse(model.User_Id);
+                var ExistingUser = _context.NotificationSetting.FirstOrDefault(u => u.User_Id == UserKey);
+                if(ExistingUser != null)
+                {
+                    ExistingUser.Pending_Action_MergerBay = model.IsPendingAction;
+                    ExistingUser.Feature_Requirements = model.IsFeatureRequirements;
+                   await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    NotificationSetting ns = new NotificationSetting();
+                    ns.User_Id = Guid.Parse(model.User_Id);
+                    ns.Notification_Setting_Id = Guid.NewGuid();
+                    ns.Pending_Action_MergerBay = model.IsPendingAction;
+                    ns.Feature_Requirements = model.IsFeatureRequirements;
+                    _context.NotificationSetting.Add(ns);
+                   await _context.SaveChangesAsync();
+                }
+               
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<NotificationSettingModel> GetNotificationSetting(string User_Id)
+        {
+            try
+            {
+                NotificationSettingModel ns = new NotificationSettingModel();
+                Guid UserKey = Guid.Parse(User_Id);
+                var ExistingUser = _context.NotificationSetting.FirstOrDefault(u => u.User_Id == UserKey);
+                if (ExistingUser != null)
+                {
+                   ns.IsPendingAction = ExistingUser.Pending_Action_MergerBay;
+                    ns.IsFeatureRequirements = ExistingUser.Feature_Requirements;
+                }
+                return ns;
             }
             catch (Exception ex)
             {

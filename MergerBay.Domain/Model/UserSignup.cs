@@ -19,4 +19,12 @@ namespace MergerBay.Domain.Model
         public Boolean accepted { get; set; }
 
     }
+
+    public class ChangePassword
+    {
+        public string User_Id { get; set; }
+        public string Password { get; set; }
+
+
+    }
 }

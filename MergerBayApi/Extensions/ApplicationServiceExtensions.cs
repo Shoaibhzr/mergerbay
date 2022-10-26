@@ -16,6 +16,12 @@ using MergerBay.Services.Services.password;
 using MergerBay.Services.Services.Token;
 using Microsoft.EntityFrameworkCore;
 using MergerBay.Services.Services.UserManagment;
+using MergerBay.Infrastructure.Interfaces.UserProfile;
+using MergerBay.Services.Services.UserProfile;
+using MergerBay.Infrastructure.Interfaces.Blob;
+using MergerBay.Services.Blob;
+using MergerBay.Infrastructure.Interfaces.ApplicationLogs;
+using MergerBay.Services.Services.ApplicationLogs;
 
 namespace MergerBayApi.Extensions
 {
@@ -33,7 +39,10 @@ namespace MergerBayApi.Extensions
             services.AddTransient<IGenericRepository, GenericRepository>();
             services.AddTransient<ISellerRepository, SellerRepository>();
             services.AddTransient<ISectorRepository, SectorRepository>();
-
+            services.AddTransient<IUserProfile, UserProfileSrv>();
+            services.AddTransient<IAzureblob, Azureblob>();
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<ILogRepository, LogRepository>();
             return services;
         }
     }

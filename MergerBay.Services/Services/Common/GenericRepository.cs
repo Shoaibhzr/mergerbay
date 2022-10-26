@@ -24,9 +24,9 @@ namespace MergerBay.Services.Services.Common
         }
         public async Task<IEnumerable<T>> GetAllAsync<T>() where T : class
         {
-            return await Context.Set<T>().ToListAsync();
+            return await Context.Set<T>().AsNoTracking().ToListAsync();
         }
-        public async ValueTask<T> GetByIdAsync<T>(int id) where T : class
+        public async ValueTask<T> GetByIdAsync<T>(Guid id) where T : class
         {
             return await Context.Set<T>().FindAsync(id);
         }
@@ -44,14 +44,23 @@ namespace MergerBay.Services.Services.Common
         {
             return await Context.Set<T>().FirstOrDefaultAsync(predicate);
         }
-        public IEnumerable<T> Where<T>(Expression<Func<T, bool>> predicate) where T : class
+        public async Task<IEnumerable<T>> Where<T>(Expression<Func<T, bool>> predicate) where T : class
         {
-            return Context.Set<T>().Where(predicate);
+            return await Context.Set<T>().Where(predicate).ToListAsync();
         }
 
         public async Task<int> CommitChangesAsync()
         {
             return await Context.SaveChangesAsync();
+        }
+
+        public async Task Update<T>(T entity) where T : class
+        {
+            await Task.FromResult(Context.Update(entity));
+ ;      }
+        public async Task<bool> Any<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return await Context.Set<T>().AnyAsync(predicate);
         }
     }
 }

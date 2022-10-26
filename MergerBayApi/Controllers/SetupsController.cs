@@ -4,6 +4,7 @@ using MergerBay.Domain.Entities.Setups;
 using MergerBay.Domain.Model;
 using MergerBay.Infrastructure.Interfaces.Common;
 using MergerBay.Infrastructure.Interfaces.Sectors;
+using MergerBay.Utilities.Services.SMTP_Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,6 +33,35 @@ namespace MergerBayApi.Controllers
 
         [HttpGet("Get/TransactionRoles")]
         public async Task<IEnumerable<TransactionRoles>> GetAllTransactionRoles() => await _GenericRepository.GetAllAsync<TransactionRoles>();
+        
+        [HttpGet("Get/Properties")]
+        public async Task<IEnumerable<Property>> GetAllProperties() => await _GenericRepository.GetAllAsync<Property>();
+        
+        [HttpGet("Get/ContractDurations")]
+        public async Task<IEnumerable<ContractDuration>> GetAllContractDurations() => await _GenericRepository.GetAllAsync<ContractDuration>();
+
+        [HttpGet("Get/Cities/{Country_Id}")]
+        public Task<IEnumerable<City>> GetAllContractDurations(Guid Country_Id) =>  _GenericRepository.Where<City>(x => x.Country_Id == Country_Id);
+
+        [HttpGet("Get/RevenuePreferences")]
+        public async Task<IEnumerable<RevenuePreference>> GetAllRevenuePreferences() => await _GenericRepository.GetAllAsync<RevenuePreference>();
+
+        [HttpGet("Get/TransactionTypes")]
+        public async Task<IEnumerable<TransactionType>> GetAllTransactionTypes() => await _GenericRepository.GetAllAsync<TransactionType>();
+
+        [HttpGet("Get/DefaultCurrency")]
+        public async Task<Currency> GetAllDefaultCurrency() => await _GenericRepository.FirstOrDefaultAsync<Currency>(x =>x.IsDefault == true);
+
+        [HttpGet("Get/RecommendedDeals")]
+        public async Task<IEnumerable<RecommendedDeal>> GetAllRecommendedDeal() => await _GenericRepository.GetAllAsync<RecommendedDeal>();
+
+        [HttpGet("Get/SendEmail")]
+        public async Task<ActionResult> SendEmail()
+        {
+            EmailServices.sendEmail("this is a test mail", "arslan.dev600@gmail.com");
+            return Ok("Email Sent");
+        }
+
         #endregion
 
         #region Sections
@@ -166,7 +196,130 @@ namespace MergerBayApi.Controllers
             {
                 return BadRequest("Having Issue While Saving Data");
             }
+        }       
+        [HttpPost("Save/Property")]
+        public async Task<ActionResult<Property>> SaveProperty(Property model)
+        {
+            model.Property_Id = Guid.NewGuid();
+            model.Created_Date = DateTime.Now;
+            model.Updated_Date = DateTime.Now;
+            await _GenericRepository.AddAsync<Property>(model);
+            if (await _GenericRepository.CommitChangesAsync() > 0)
+            {
+                return await _GenericRepository.FirstOrDefaultAsync<Property>(x => x.Property_Id == model.Property_Id);
+            }
+            else
+            {
+                return BadRequest("Having Issue While Saving Data");
+            }
+        }      
+        [HttpPost("Save/ContractDuration")]
+        public async Task<ActionResult<ContractDuration>> SaveContractDuration(ContractDuration model)
+        {
+            model.Duration_Id = Guid.NewGuid();
+            model.Created_Date = DateTime.Now;
+            model.Updated_Date = DateTime.Now;
+            await _GenericRepository.AddAsync<ContractDuration>(model);
+            if (await _GenericRepository.CommitChangesAsync() > 0)
+            {
+                return await _GenericRepository.FirstOrDefaultAsync<ContractDuration>(x => x.Duration_Id == model.Duration_Id);
+            }
+            else
+            {
+                return BadRequest("Having Issue While Saving Data");
+            }
         }
+
+        [HttpPost("Save/City")]
+        public async Task<ActionResult<City>> SaveCity(City model)
+        {
+            model.City_Id = Guid.NewGuid();
+            model.Created_Date = DateTime.Now;
+            model.Updated_Date = DateTime.Now;
+            await _GenericRepository.AddAsync<City>(model);
+            if (await _GenericRepository.CommitChangesAsync() > 0)
+            {
+                return await _GenericRepository.FirstOrDefaultAsync<City>(x => x.City_Id == model.City_Id);
+            }
+            else
+            {
+                return BadRequest("Having Issue While Saving Data");
+            }
+        }
+        [HttpPost("Save/RevenuePreference")]
+        public async Task<ActionResult<RevenuePreference>> SaveRevenuePreference(RevenuePreference model)
+        {
+            model.Revenue_Id = Guid.NewGuid();
+            model.Created_Date = DateTime.Now;
+            model.Updated_Date = DateTime.Now;
+            await _GenericRepository.AddAsync<RevenuePreference>(model);
+            if (await _GenericRepository.CommitChangesAsync() > 0)
+            {
+                return await _GenericRepository.FirstOrDefaultAsync<RevenuePreference>(x => x.Revenue_Id == model.Revenue_Id);
+            }
+            else
+            {
+                return BadRequest("Having Issue While Saving Data");
+            }
+        }
+        [HttpPost("Save/TransactionType")]
+        public async Task<ActionResult<TransactionType>> SaveTransactionType(TransactionType model)
+        {
+            model.TransactionType_Id = Guid.NewGuid();
+            model.Created_Date = DateTime.Now;
+            model.Updated_Date = DateTime.Now;
+            await _GenericRepository.AddAsync<TransactionType>(model);
+            if (await _GenericRepository.CommitChangesAsync() > 0)
+            {
+                return await _GenericRepository.FirstOrDefaultAsync<TransactionType>(x => x.TransactionType_Id == model.TransactionType_Id);
+            }
+            else
+            {
+                return BadRequest("Having Issue While Saving Data");
+            }
+        }
+        [HttpPost("Save/Currency")]
+        public async Task<ActionResult<Currency>> SaveCurrency(Currency model)
+        {
+            model.Currency_Id = Guid.NewGuid();
+            model.Created_Date = DateTime.Now;
+            model.Updated_Date = DateTime.Now;
+            await _GenericRepository.AddAsync<Currency>(model);
+            if (await _GenericRepository.CommitChangesAsync() > 0)
+            {
+                return await _GenericRepository.FirstOrDefaultAsync<Currency>(x => x.Currency_Id == model.Currency_Id);
+            }
+            else
+            {
+                return BadRequest("Having Issue While Saving Data");
+            }
+        }
+
+        [HttpPost("Save/RecommendedDeal")]
+        public async Task<IActionResult> SaveRecommendedDeal(RecommendedDeal model)
+        {
+            var deal = await _GenericRepository.FirstOrDefaultAsync<RecommendedDeal>(x => x.FormId == model.FormId && x.UserId == model.UserId);
+            if (deal == null)
+            {
+                model.RecommendationId = Guid.NewGuid();
+                model.Created_Date = DateTime.Now;
+                await _GenericRepository.AddAsync<RecommendedDeal>(model);
+                if (await _GenericRepository.CommitChangesAsync() > 0)
+                {
+                    return Ok("Added as Reommendation");
+                }
+                else
+                {
+                    return BadRequest("Having Issue While Saving Data");
+                }
+            }
+            else
+            {
+                return Ok("Already Exists");
+            }
+
+        }
+
         #endregion
 
 

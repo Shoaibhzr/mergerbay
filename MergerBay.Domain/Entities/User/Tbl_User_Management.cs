@@ -31,7 +31,7 @@ namespace MergerBay.Domain.Entities.User
         public string Country { get; set; }
         public string Website { get; set; }
         public Guid Category_ID { get; set; }
-        public Guid Designation_ID { get; set; }
+        public string Designation { get; set; }
         public Guid Created_by { get; set; }
         public DateTime Created_Date { get; set; }
         public Guid Modified_By { get; set; }

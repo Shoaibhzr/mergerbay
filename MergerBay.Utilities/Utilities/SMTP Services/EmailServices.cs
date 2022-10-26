@@ -16,7 +16,7 @@ namespace MergerBay.Utilities.Services.SMTP_Services
                 CC  = new List<string>();
                 BCC = new List<string>();
 
-                MailAddress from = new MailAddress("developer@meggafone.com","NoReply");
+                MailAddress from = new MailAddress(Config.From_Email, "NoReply");
                 MailAddress to = new MailAddress(MessageTo);
                 MailMessage message = new MailMessage(from, to);
                 message.Subject = Subject;
@@ -46,12 +46,15 @@ namespace MergerBay.Utilities.Services.SMTP_Services
                 }
                 //smtp.gmail.com
                 NetworkCredential NetworkCred = new NetworkCredential();
-                NetworkCred.UserName = message.From.Address;
-                NetworkCred.Password = "Meggafone2020";
-                string server = "smtp.office365.com";
+               
+                NetworkCred.UserName = Config.Login_UserName;
+                NetworkCred.Password = Config.Login_Password;
+                string server = Config.Server;
                 SmtpClient client = new SmtpClient(server);
-                client.Port = 587;
-                client.EnableSsl = true;
+                client.UseDefaultCredentials = false;
+                 client.Port = Config.Port;
+               // client.Port = 25;
+                client.EnableSsl = Config.Is_SSL;
                 client.Credentials = NetworkCred;
                 client.Send(message);
             }
@@ -70,6 +73,7 @@ namespace MergerBay.Utilities.Services.SMTP_Services
                 SmtpClient client = new SmtpClient("smtp.office365.com");
                 client.Port = 587;
                 client.EnableSsl = true;
+               
                 client.Timeout = 10000000;
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
                 client.UseDefaultCredentials = true;
